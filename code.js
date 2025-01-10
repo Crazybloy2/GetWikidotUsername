@@ -1,6 +1,6 @@
 function username1() {
-  const userName = document.getElementById('username').innerHTML;
+  const userName = document.getElementById('my-account').innerHTML;
   
-  document.getElementById('UserGreeting').innerHTML = userName;
+  document.getElementById('UserGreeting').innerHTML = "Welcome" + " " + userName;
   };
   username1();
