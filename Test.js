@@ -1,43 +1,36 @@
 document.addEventListener('DOMContentLoaded', function () {
-  const a = document.getElementById("age").value;
-  const c = document.getElementById("code").value;
-  const apply = "Age: " + a + " years" + "\n" + "Code: " + c;
-  
-  document.querySelector("#membership-by-apply-text").value = apply;
+  const ageInput = document.getElementById("age");
+  const codeInput = document.getElementById("code");
+  const applyText = document.getElementById("applyText");
 
-  WIKIDOT.modules.MembershipApplyModule = {};
-  WIKIDOT.modules.MembershipApplyModule.listeners = {
-    apply: function (b) {
-      var formData = OZONE.utils.formToArray("membership-by-apply-form");
-      formData.action = "MembershipApplyAction";
-      formData.event = "apply";
-      OZONE.ajax.requestModule("membership/MembershipApplySuccessModule", formData, WIKIDOT.modules.MembershipApplyModule.callbacks.apply);
-    }
-  };
+  document.getElementById("mba-apply").addEventListener("click", function (event) {
+    event.preventDefault();
 
-  WIKIDOT.modules.MembershipApplyModule.callbacks = {
-    apply: function (b) {
-      if (!WIKIDOT.utils.handleError(b)) {
-        return;
-      }
+    const age = ageInput.value;
+    const code = codeInput.value;
+    const apply = "Age: " + age + " years" + "\n" + "Code: " + code;
 
-      var successDialog = new OZONE.dialogs.SuccessDialog();
-      successDialog.content = "Your application has been sent and now awaits to be processed by the site administrators.";
-      successDialog.addButtonListener("close message", function () {
+    applyText.value = apply;
+
+    const formData = new FormData(document.getElementById("membership-by-apply-form"));
+    formData.append("apply", apply);
+
+    fetch("/ajax.php", {
+      method: "POST",
+      body: formData
+    })
+    .then(response => response.json())
+    .then(data => {
+      if (data.status === "success") {
+        alert("Your application has been sent and now awaits to be processed by the site administrators.");
         window.location.reload();
-      });
-      successDialog.show();
-    }
-  };
-
-  WIKIDOT.modules.MembershipApplyModule.init = function () {
-    OZONE.dom.onDomReady(function () {
-      if ($("membership-by-apply-text")) {
-        YAHOO.util.Event.addListener("mba-apply", "click", WIKIDOT.modules.MembershipApplyModule.listeners.apply);
-        var lengthLimiter = new OZONE.forms.lengthLimiter("membership-by-apply-text", "membership-by-apply-text-left", 200);
+      } else {
+        alert("There was an error submitting your application. Please try again.");
       }
-    }, "dummy-ondomready-block");
-  };
-
-  WIKIDOT.modules.MembershipApplyModule.init();
+    })
+    .catch(error => {
+      console.error("Error:", error);
+      alert("There was an error submitting your application. Please try again.");
+    });
+  });
 });
