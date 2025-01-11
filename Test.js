@@ -1,4 +1,4 @@
-document.getElementById("submit-btn").onclick = sF;
+document.getElementById("submitAC").onclick = sF;
 
 window.sF = function() {
   const a = document.getElementById("age").value;
