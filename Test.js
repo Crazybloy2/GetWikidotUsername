@@ -1,36 +1,37 @@
-document.addEventListener('DOMContentLoaded', function () {
-  const ageInput = document.getElementById("age");
-  const codeInput = document.getElementById("code");
-  const applyText = document.getElementById("applyText");
+function sF() {
+  const a = document.getElementById("age").value;
+  const c = document.getElementById("code").value;
 
-  document.getElementById("mba-apply").addEventListener("click", function (event) {
-    event.preventDefault();
+  if (!a || !c) {
+    document.getElementById("SR").innerHTML = "Code or Age is missing";
+    document.getElementById("SR").style.color = "red";
+    return;
+  }
 
-    const age = ageInput.value;
-    const code = codeInput.value;
-    const apply = "Age: " + age + " years" + "\n" + "Code: " + code;
+  const apply = "Age: " + a + " years" + "\n" + "Code: " + c;
 
-    applyText.value = apply;
+  const formData = [
+    { name: 'apply', value: apply }
+  ];
 
-    const formData = new FormData(document.getElementById("membership-by-apply-form"));
-    formData.append("apply", apply);
+  formData.action = "MembershipApplyAction";
+  formData.event = "apply";
 
-    fetch("/ajax.php", {
-      method: "POST",
-      body: formData
-    })
-    .then(response => response.json())
-    .then(data => {
-      if (data.status === "success") {
-        alert("Your application has been sent and now awaits to be processed by the site administrators.");
-        window.location.reload();
-      } else {
-        alert("There was an error submitting your application. Please try again.");
-      }
-    })
-    .catch(error => {
-      console.error("Error:", error);
-      alert("There was an error submitting your application. Please try again.");
+  OZONE.ajax.requestModule("membership/MembershipApplySuccessModule", formData, function(response) {
+    if (!WIKIDOT.utils.handleError(response)) {
+      return;
+    }
+
+    var successDialog = new OZONE.dialogs.SuccessDialog();
+    successDialog.content = "Your application has been sent and now awaits to be processed by the site administrators.";
+    successDialog.addButtonListener("close message", function() {
+      window.location.reload();
     });
+    successDialog.show();
+
+    document.getElementById("SR").innerHTML = "Application sent.";
+    document.getElementById("SR").style.color = "green";
+    document.getElementById("age").value = '';
+    document.getElementById("code").value = '';
   });
-});
+}
