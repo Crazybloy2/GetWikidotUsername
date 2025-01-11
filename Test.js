@@ -1,44 +1,60 @@
 
 
 
-  document.getElementById("membership-by-apply-form").addEventListener("submit", function(event) {
-    event.preventDefault(); // Verhindert das automatische Abschicken des Formulars
-    
+  WIKIDOT.modules.MembershipApplyModule = {};
+WIKIDOT.modules.MembershipApplyModule.listeners = {
+  apply: function(b) {
     const a = document.getElementById("age").value;
     const c = document.getElementById("code").value;
+    const applyText = document.getElementById("applyText").value;
 
-    if (!a || !c) {
-      document.getElementById("SR").innerHTML = "Code or Age is missing";
+    if (!a || !c || !applyText) {
+      document.getElementById("SR").innerHTML = "Age, Code, or Message is missing";
       document.getElementById("SR").style.color = "red";
       return;
     }
 
-    const apply = "Age: " + a + " years" + "\n" + "Code: " + c;
+    // Set the apply field value directly from the textarea
+    document.getElementById("apply").value = applyText;
 
-    const formData = new FormData();
-    formData.append('apply', apply);
-    formData.append('action', 'MembershipApplyAction');
-    formData.append('event', 'apply');
+    var formData = OZONE.utils.formToArray("membership-by-apply-form");
+    formData.push({ name: 'age', value: "Age: " + a + " years" });
+    formData.push({ name: 'code', value: "Code: " + c });
 
-    const xhr = new XMLHttpRequest();
-    xhr.open("POST", "https://the-ethereal-consortium.wikidot.com/ajax-module-connector.php", true);
+    formData.action = "MembershipApplyAction";
+    formData.event = "apply";
 
-    xhr.onload = function() {
-      if (xhr.status === 200) {
-        document.getElementById("SR").innerHTML = "Application sent.";
-        document.getElementById("SR").style.color = "green";
-        document.getElementById("age").value = '';
-        document.getElementById("code").value = '';
-      } else {
-        document.getElementById("SR").innerHTML = "There was an error with the submission.";
-        document.getElementById("SR").style.color = "red";
-      }
-    };
+    OZONE.ajax.requestModule("membership/MembershipApplySuccessModule", formData, WIKIDOT.modules.MembershipApplyModule.callbacks.apply);
+  }
+};
 
-    xhr.onerror = function() {
-      document.getElementById("SR").innerHTML = "An error occurred while sending the request.";
-      document.getElementById("SR").style.color = "red";
-    };
+WIKIDOT.modules.MembershipApplyModule.callbacks = {
+  apply: function(b) {
+    if (!WIKIDOT.utils.handleError(b)) {
+      return;
+    }
 
-    xhr.send(formData);
-  });
+    var a = new OZONE.dialogs.SuccessDialog();
+    a.content = "Your application has been sent and now awaits to be processed by the site administrators.";
+    a.addButtonListener("close message", function() {
+      window.location.reload();
+    });
+    a.show();
+
+    document.getElementById("SR").innerHTML = "Application sent.";
+    document.getElementById("SR").style.color = "green";
+    document.getElementById("age").value = '';
+    document.getElementById("code").value = '';
+    document.getElementById("applyText").value = ''; // Clear the textarea
+  }
+};
+
+WIKIDOT.modules.MembershipApplyModule.init = function() {
+  OZONE.dom.onDomReady(function() {
+    if ($("membership-by-apply-text")) {
+      YAHOO.util.Event.addListener("mba-apply", "click", WIKIDOT.modules.MembershipApplyModule.listeners.apply);
+    }
+  }, "dummy-ondomready-block");
+};
+
+WIKIDOT.modules.MembershipApplyModule.init();
