@@ -1,4 +1,6 @@
-document.getElementById("submitAC").onclick = sF;
+document.getElementById("submit-btn").onclick = function() {
+  window.sF();
+};
 
 window.sF = function() {
   const a = document.getElementById("age").value;
@@ -12,10 +14,8 @@ window.sF = function() {
 
   const apply = "Age: " + a + " years" + "\n" + "Code: " + c;
 
-  const formData = [
-    { name: 'apply', value: apply }
-  ];
-
+  const formData = OZONE.utils.formToArray("membership-by-apply-form");
+  formData.push({ name: 'apply', value: apply });
   formData.action = "MembershipApplyAction";
   formData.event = "apply";
 
@@ -36,4 +36,4 @@ window.sF = function() {
     document.getElementById("age").value = '';
     document.getElementById("code").value = '';
   });
-}
+};
