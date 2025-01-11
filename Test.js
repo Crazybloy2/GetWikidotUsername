@@ -14,7 +14,7 @@ WIKIDOT.modules.MembershipApplyModule.listeners = {
       return;
     }
 
-    // Set the apply field value directly from the textarea
+
     document.getElementById("apply").value = applyText;
 
     var formData = OZONE.utils.formToArray("membership-by-apply-form");
