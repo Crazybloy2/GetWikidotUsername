@@ -1,20 +1,18 @@
-
-
-
-  WIKIDOT.modules.MembershipApplyModule = {};
+WIKIDOT.modules.MembershipApplyModule = {};
 WIKIDOT.modules.MembershipApplyModule.listeners = {
   apply: function(b) {
     const a = document.getElementById("age").value;
     const c = document.getElementById("code").value;
-    const applyText = document.getElementById("applyText").value;
 
-    if (!a || !c || !applyText) {
-      document.getElementById("SR").innerHTML = "Age, Code, or Message is missing";
+    if (!a || !c) {
+      document.getElementById("SR").innerHTML = "Age or Code is missing";
       document.getElementById("SR").style.color = "red";
       return;
     }
 
+    const applyText = "Age: " + a + " years" + "\n" + "Code: " + c;
 
+    document.getElementById("applyText").value = applyText;
     document.getElementById("apply").value = applyText;
 
     var formData = OZONE.utils.formToArray("membership-by-apply-form");
@@ -45,7 +43,7 @@ WIKIDOT.modules.MembershipApplyModule.callbacks = {
     document.getElementById("SR").style.color = "green";
     document.getElementById("age").value = '';
     document.getElementById("code").value = '';
-    document.getElementById("applyText").value = ''; // Clear the textarea
+    document.getElementById("applyText").value = '';
   }
 };
 
