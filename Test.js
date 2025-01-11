@@ -1,4 +1,4 @@
-function sF() {
+window.sF = function() {
   const a = document.getElementById("age").value;
   const c = document.getElementById("code").value;
 
