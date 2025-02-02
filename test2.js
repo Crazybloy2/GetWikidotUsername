@@ -22,9 +22,11 @@ const c = document.getElementById("code").value;
 setInterval(() => {
   const a = document.getElementById("age").value;
   const c = document.getElementById("code").value;
-  const apply = "Age: " + a + " years" + "\n" + "Code: " + c;
+  const apply = "Age: " + a + " years" + \n + " " + " " + "Code: " + c;
   document.getElementById("membership-by-apply-text").value = apply;
 }, 500);
 
+
+  //exclude this part while debugging
   document.querySelector('#membership-by-apply-text').setAttribute('hidden', 'hidden')
 
