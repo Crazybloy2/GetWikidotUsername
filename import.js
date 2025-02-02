@@ -3,3 +3,4 @@ const el = document.createElement('script');
 el.setAttribute('type', 'text/javascript');
 el.setAttribute('src', importScript);
 document.getElementById('importJS').append(el);
+console.log('test');
