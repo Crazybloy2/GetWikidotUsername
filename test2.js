@@ -11,7 +11,7 @@ elHeaderTwo.setAttribute('id', 'codeheader');
 const elTwo = document.createElement('input');
 elTwo.setAttribute('id', 'code');
 elTwo.setAttribute('placeholder', 'code');
-const elThree = document
+
 
 document.querySelector('.form').append(elHeaderOne, elOne, elHeaderTwo, elTwo);
 
